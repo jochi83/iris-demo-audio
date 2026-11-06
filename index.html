@@ -324,6 +324,14 @@ body{background:radial-gradient(900px 620px at 58% -20%,#17488463,transparent 62
 .theme-toggle{display:inline-flex;align-items:center;gap:7px;border:1px solid #9fbee155;background:#ffffff12;color:#eaf2ff;border-radius:10px;padding:7px 10px;font-size:12px;font-weight:750;white-space:nowrap}.theme-toggle:hover{background:#ffffff20}.theme-icon{font-size:14px;line-height:1}
 body.theme-light{--bg:#f4f7fc;--surface:#fff;--surface2:#f0f5fd;--card:#fff;--ink:#16243a;--muted:#64748b;--line:#dbe5f2;background:radial-gradient(900px 620px at 58% -20%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 62%),#f4f7fc}
 .theme-light .landing{background:radial-gradient(800px 600px at 12% 0%,#dceaff 0,transparent 66%),radial-gradient(650px 530px at 100% 100%,#ffdfe4 0,transparent 67%),#f7f9fe;color:#16243a}.theme-light .landing-hero{background:linear-gradient(115deg,#f8fbffea,#eaf3ffdb 55%,#fff7f8e8);border-color:#aec8ee;box-shadow:0 30px 70px #15396626}.theme-light .landing-hero::before{color:#0b2c6209}.theme-light .landing-brand,.theme-light .landing-copy h1{color:#15243b}.theme-light .landing-copy h1 em{color:#2670d8}.theme-light .landing-copy > p:not(.landing-kicker){color:#435775}.theme-light .landing-kicker{color:#214e87;border-color:#a5c8f6;background:#e9f3ff}.theme-light .landing-nav > span,.theme-light .landing-dots{color:#536b8b}.theme-light .theme-toggle{color:#1c467c;background:#fff;border-color:#bdd0e9}.theme-light .via-gif-card{background:linear-gradient(145deg,#d5e9ff,#acd1ff 48%,#ffbeca);box-shadow:0 24px 48px #24436d30}.theme-light .prev{background:#fff;border-color:#b9d0ea}.theme-light .prev-top{color:#1b3557;border-color:#d8e5f3}.theme-light .prev-msg{background:#edf4fc;border-color:#cbdced;color:#213958}.theme-light .prev-user{background:#dcecff;color:#1c4274}.theme-light .prev-chips span{background:#f7fbff;border-color:#c7d9ec;color:#315477}.theme-light .via-guide .guide-step,.theme-light .via-guide .guide-step:nth-child(2){background:linear-gradient(145deg,#fff,#edf5ff);border-color:#cbdcec;box-shadow:0 12px 26px #173b6820}.theme-light .via-guide .guide-step:nth-child(3){background:linear-gradient(145deg,#fff8f9,#fff0f2)}.theme-light .guide-step h2{color:#19385f}.theme-light .guide-step p{color:#58708e}.theme-light .rail{background:linear-gradient(180deg,#fff,#edf4fc);box-shadow:18px 0 44px #17365a13}.theme-light .rail-brand strong,.theme-light .rail-user b,.theme-light .stage-top .nameTag,.theme-light .chat-head b{color:#172b46}.theme-light .rn{color:#657994}.theme-light .rn:hover:not(:disabled){color:#172b46;background:#eaf2fc}.theme-light .rn.on{background:var(--accent-soft);color:#142c4b;box-shadow:inset 0 0 0 1px var(--accent)}.theme-light .stage-art{background:radial-gradient(ellipse at center,color-mix(in srgb,var(--accent) 17%,transparent),transparent 66%)}.theme-light .board{background:#fff;border-color:#d6e1ef;box-shadow:0 18px 45px #173b6817}.theme-light .board .tabs{background:#edf4fc;border-color:#d6e3f1}.theme-light .board .tab{color:#657994}.theme-light .board .tab.on{background:#fff;color:#1a3556}.theme-light #mapSvg,.theme-light #swarmCv{background:radial-gradient(circle at 50% 45%,#fff,#eff5fc)}.theme-light #mapSvg .edge{stroke:#b8cbe2}.theme-light #mapSvg .node circle{stroke:#fff}.theme-light #mapSvg .node text{fill:#1b2e4b;stroke:#fff}.theme-light .detail{background:#edf4fc;border-color:#d2dfed;color:#314864}.theme-light .screen-inner{background:#fff}.theme-light .chat{background:linear-gradient(180deg,#fff,#f5f8fd);box-shadow:-18px 0 45px #173b6813}.theme-light .msg.assistant{background:#f0f5fb;border-color:#d8e3f0;color:#223752;box-shadow:0 8px 18px #173b6810}.theme-light .chips .chip{background:#fff;border-color:#d3dfed;color:#284968}.theme-light .chatform{background:#fff;border-color:#acc4e0;box-shadow:0 10px 28px #173b6816}.theme-light .iconbtn{background:#edf4fc;color:#284968}
+/* ---------- Diseño adaptable: móvil, tablet y escritorio ---------- */
+@media (max-width:700px){
+  body{font-size:14px}
+  .landing{padding:14px 12px 28px}.landing-shell{gap:14px}.landing-nav{align-items:flex-start}.landing-brand{font-size:15px}.landing-brand i{width:32px;height:32px;border-radius:10px}.landing-hero{gap:22px;padding:24px 18px;border-radius:22px}.landing-copy h1{font-size:clamp(36px,12vw,52px)}.landing-copy>p:not(.landing-kicker){font-size:16px}.want-via{width:100%;padding:15px 12px}.via-gif-card{padding:9px;border-radius:18px;transform:none}.prev-body{min-height:230px}.prev-msg,.prev-user{max-width:94%;font-size:12px}.via-guide{gap:10px}.guide-step{min-height:0;padding:15px}
+  .setup{padding:18px 12px 28px}.wiz{gap:14px}.wiz-top{align-items:flex-start}.brand-row{width:100%}.fgrid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none;overflow:visible;gap:8px}.fcard{gap:7px;padding:9px;border-radius:13px}.fpic{height:78px}.fpic .emblem.emoji{font-size:32px}.fico{width:34px;height:34px;border-radius:10px}.fico svg{width:18px;height:18px}.fcheck{width:18px;height:18px;font-size:10px;top:7px;left:7px}.fname{font-size:11px}.wiz-foot{align-items:stretch}.wiz-foot .primary,.wiz-foot .ghost{width:100%;text-align:center}.wiz-foot #setupMsg{width:100%;text-align:center}.primary.big{padding:13px 15px}
+  #app{display:grid;grid-template-columns:1fr;height:auto;min-height:100vh;padding:0}.rail{position:sticky;top:0;z-index:20;flex-direction:row;align-items:center;gap:8px;padding:8px 10px;overflow:hidden;border-right:0;border-bottom:1px solid var(--line)}.rail-brand{flex-direction:row;gap:7px;text-align:left;flex:none}.rail-brand .mark{width:30px;height:30px;border-radius:9px;font-size:12px}.rail-brand>div{align-items:flex-start}.rail-brand strong{font-size:13px}.rail-brand small{display:none}.rail-nav{flex:1;flex-direction:row;gap:5px;margin:0;overflow-x:auto;scrollbar-width:none}.rail-nav::-webkit-scrollbar{display:none}.rn{width:auto;min-width:54px;padding:6px;gap:3px;font-size:9px;flex:none}.rn svg{width:16px;height:16px}.rail-user{display:none}.stage{padding:14px 12px;gap:12px}.stage-top{gap:8px}.who{min-width:0}.who .nameTag{font-size:15px}.hstat{justify-content:flex-start}.theme-toggle{padding:6px 8px}.theme-toggle span:last-child{display:none}.stage-art{height:220px;border-radius:18px}.board{padding:10px;border-radius:15px;min-height:420px}.tabs{width:100%;overflow-x:auto;flex-wrap:nowrap}.tab{white-space:nowrap;font-size:12px;padding:8px 10px}.chat{min-height:500px;padding:14px 12px}.chat-head{padding-bottom:10px}.msg{max-width:94%;font-size:14px}.chips{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}.chip{white-space:nowrap}.chatform{position:sticky;bottom:8px}.screen-frame{min-height:270px;padding:9px}.screen-inner video,.screen-inner iframe{min-height:240px}
+}
+@media (max-width:390px){.fgrid{grid-template-columns:1fr}.fpic{height:68px}.fpic .emblem.emoji{font-size:28px}.landing-copy h1{font-size:34px}.stage-art{height:190px}.hstat .apipills{display:none}.rn{min-width:48px;padding:6px 4px}.rn svg{width:15px;height:15px}}
 </style>
 </head>
 <body>
@@ -336,7 +344,7 @@ body.theme-light{--bg:#f4f7fc;--surface:#fff;--surface2:#f0f5fd;--card:#fff;--in
         <p class="landing-kicker">✦ MICROAGENTES ESTUDIANTILES</p>
         <h1 id="landingTitle">Tu compañera para <em>aprender haciendo.</em></h1>
         <p>Los <strong>IRIS</strong> son microagentes estudiantiles de UCASAL. Te acompañan para aprender de un modo más cercano, visual e interactivo.</p>
-        <button id="wantViaBtn" class="want-via" type="button">Probar audio y micrófono ✦</button>
+        <button id="wantViaBtn" class="want-via" type="button">Elegir mi facultad y empezar ✦</button>
         <div class="landing-dots"><span>Cada facultad, su color:</span><span id="landingDots" class="dots-row"></span></div>
       </div>
       <div class="via-gif-card" role="img" aria-label="Vista previa de IRIS: compañero con los colores de cada facultad">
@@ -372,8 +380,8 @@ body.theme-light{--bg:#f4f7fc;--surface:#fff;--surface2:#f0f5fd;--card:#fff;--in
     </div>
 
     <section id="step1" class="wiz-step">
-      <h1>Elegí tu carrera</h1>
-      <p class="muted">Tu compañero adopta el color y el enfoque de tu facultad.</p>
+        <h1>¿A qué facultad pertenecés?</h1>
+        <p class="muted">Elegí tu facultad primero: define el color, el objeto y la identidad de tu IRIS.</p>
       <div id="picks" class="fgrid"></div>
       <div class="wiz-foot"><span id="pickName" class="muted small"></span><button id="nextBtn" class="primary big" type="button">Siguiente →</button></div>
     </section>
@@ -1954,10 +1962,11 @@ function startSession() {
 }
 
 $('#nextBtn').addEventListener('click', () => {
-  showStep(2);
-  // También detecta claves completadas por el administrador de contraseñas.
+  // En la versión pública, la facultad se elige primero y luego se pasa a las pruebas.
+  showStep(3);
   refreshKeys();
   warmAllApis();
+  $('#startBtn').hidden = false;
 });
 $('#next2Btn').addEventListener('click', () => {
   refreshKeys();
@@ -1965,17 +1974,15 @@ $('#next2Btn').addEventListener('click', () => {
   checkStartReady();
 });
 $('#backBtn').addEventListener('click', () => showStep(1));
-$('#back2Btn').addEventListener('click', () => showStep(2));
+$('#back2Btn').addEventListener('click', () => showStep(1));
 $('#startBtn').addEventListener('click', startSession);
 $('#themeBtnLanding').addEventListener('click', toggleTheme);
 $('#themeBtnApp').addEventListener('click', toggleTheme);
 $('#wantViaBtn').addEventListener('click', () => {
   $('#landing').classList.add('hidden');
   $('#setup').classList.remove('hidden');
-  showStep(3);
-  $('#startBtn').hidden = false;
-  refreshKeys();
-  warmAllApis();
+  // La selección de facultad define el color, objeto y experiencia de IRIS.
+  showStep(1);
 });
 $('#provs').addEventListener('change', () => {
   const p = document.querySelector('input[name=prov]:checked')?.value;
