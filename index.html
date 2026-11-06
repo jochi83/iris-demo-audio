@@ -569,6 +569,10 @@ const NANO_BANANA_MODEL = 'gemini-nano-banana-2.1';
 // Endpoint oficial de Gemini para Nano Banana. La clave se envía en el encabezado,
 // nunca queda incluida en la URL ni se comparte con OpenAI o DeepSeek.
 const NANO_BANANA_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/interactions';
+// Dirección pública del intermediario seguro. No contiene ni expone claves.
+const IRIS_BACKEND_URL = 'https://iris-demo-audio.onrender.com';
+const backendWsUrl = path => IRIS_BACKEND_URL.replace(/^https:/, 'wss:').replace(/^http:/, 'ws:') + path;
+let BACKEND_PROVIDERS = { openai: false, deepseek: false, gemini: false };
 const PROV_LABEL = {
   openai: ['OpenAI Realtime', 'voz en tiempo real, con chat y enjambre de DeepSeek'],
   deepseek: ['DeepSeek', 'chat por texto con enjambre de especialistas'],
@@ -906,9 +910,9 @@ async function generarImagenContextual(descripcion, titulo) {
   if (!S.keys.gemini) return { ok: false, mensaje: 'Falta la clave de Gemini para Nano Banana.' };
   const prompt = `Creá una infografía educativa horizontal 16:9 para estudiantes sobre: ${String(descripcion).slice(0, 1800)}. Elegí la estructura más útil: diagrama, proceso, línea de tiempo, comparación o mapa conceptual. Diseño moderno, atractivo y claro, con jerarquía visual, iconos o ilustraciones simples y colores armónicos. Usá solamente títulos cortos y etiquetas grandes y legibles en español; nunca párrafos, texto pequeño, marcas ni logotipos. La pieza debe poder proyectarse como una diapositiva y ayudar a comprender el concepto de inmediato.`;
   try {
-    const r = await fetch(NANO_BANANA_ENDPOINT, {
+    const r = await fetch(IRIS_BACKEND_URL + '/v1/image', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': S.keys.gemini },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: NANO_BANANA_MODEL,
         input: [{ type: 'text', text: prompt }],
@@ -1188,8 +1192,8 @@ function liveBrowserIssue() {
   return '';
 }
 function openaiLive(send, s) {
-  // El navegador no permite cabeceras en WebSocket: la clave viaja en el subprotocolo.
-  const up = new WebSocket('wss://api.openai.com/v1/realtime?model=' + encodeURIComponent(MODELS.openai), ['realtime', 'openai-insecure-api-key.' + S.keys.openai]);
+  // La sesión pasa por el backend: la clave nunca llega al navegador.
+  const up = new WebSocket(backendWsUrl('/v1/live/openai'));
   const out = o => { if (up.readyState === WebSocket.OPEN) up.send(JSON.stringify(o)); };
   up.onopen = () => out({ type: 'session.update', session: {
     type: 'realtime', model: MODELS.openai, output_modalities: ['audio'], instructions: s.system,
@@ -1224,7 +1228,7 @@ function openaiLive(send, s) {
 // Adaptador directo para Gemini Live. El API recibe audio PCM16 a 16 kHz y
 // devuelve PCM16 a 24 kHz mediante el WebSocket oficial de BidiGenerateContent.
 function geminiLive(send, s) {
-  const ws = new WebSocket(GEMINI_LIVE_WS + '?key=' + encodeURIComponent(S.keys.gemini));
+  const ws = new WebSocket(backendWsUrl('/v1/live/gemini'));
   const out = o => { if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(o)); };
   ws.onopen = () => out({ setup: {
     model: 'models/' + GEMINI_LIVE_MODEL,
@@ -1313,8 +1317,8 @@ function connectLive(engine = S.provider || 'gemini') {
 }
 /* Chat por texto: OpenAI y DeepSeek usan el mismo formato de API (chat completions con herramientas) */
 const CHAT_ENDPOINTS = {
-  openai: ['https://api.openai.com/v1/chat/completions', MODELS.openai],
-  deepseek: ['https://api.deepseek.com/chat/completions', MODELS.deepseek],
+  openai: [IRIS_BACKEND_URL + '/v1/chat/openai', MODELS.openai],
+  deepseek: [IRIS_BACKEND_URL + '/v1/chat/deepseek', MODELS.deepseek],
 };
 async function chatCompletion(provider, messages, tools) {
   const [url, model] = CHAT_ENDPOINTS[provider];
@@ -1329,7 +1333,7 @@ async function chatCompletion(provider, messages, tools) {
   try {
     r = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + S.keys[provider] },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body), signal: controller.signal,
     });
   } catch (e) {
@@ -1616,21 +1620,14 @@ function probeGeminiLive(k, signal) {
 }
 // Cada prueba valida la clave y el acceso al modelo.
 const API_TEST = {
-  openai: (k, signal) => fetch(`https://api.openai.com/v1/models/${MODELS.openai}`, { headers: { Authorization: 'Bearer ' + k }, signal }),
-  deepseek: (k, signal) => fetch('https://api.deepseek.com/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + k },
-    body: JSON.stringify({ model: MODELS.deepseek, messages: [{ role: 'user', content: 'ping' }], max_tokens: 1 }),
-    signal,
-  }),
-  gemini: (k, signal) => probeGeminiLive(k, signal),
+  openai: (_k, signal) => fetch(IRIS_BACKEND_URL + '/health', { signal }),
+  deepseek: (_k, signal) => fetch(IRIS_BACKEND_URL + '/health', { signal }),
+  gemini: (_k, signal) => fetch(IRIS_BACKEND_URL + '/health', { signal }),
 };
 // Las APIs de texto son HTTP (sin sesión persistente). Al precalentar la red,
 // la primera consulta reutiliza DNS/TLS y responde con menos demora.
 function preconnectApi(provider) {
-  const origin = provider === 'openai' ? 'https://api.openai.com'
-    : provider === 'deepseek' ? 'https://api.deepseek.com'
-    : 'https://generativelanguage.googleapis.com';
+  const origin = IRIS_BACKEND_URL;
   if (document.head.querySelector(`link[data-api-warm="${provider}"]`)) return;
   const link = document.createElement('link');
   link.rel = 'preconnect'; link.href = origin; link.crossOrigin = 'anonymous';
@@ -1882,12 +1879,12 @@ function showStep(n) {
   });
 }
 function refreshKeys() {
-  S.keys = { openai: $('#key-openai').value.trim(), deepseek: $('#key-deepseek').value.trim(), gemini: $('#key-gemini').value.trim() };
+  S.keys = { ...BACKEND_PROVIDERS };
   const order = ['gemini', 'openai', 'deepseek'];
   order.forEach(p => {
     const inp = document.querySelector(`input[name=prov][value=${p}]`);
     inp.disabled = !S.keys[p];
-    inp.parentElement.parentElement.querySelector('small').textContent = S.keys[p] ? PROV_LABEL[p][1] : 'falta la clave';
+    inp.parentElement.parentElement.querySelector('small').textContent = S.keys[p] ? 'protegida por el servidor de IRIS' : 'no disponible';
   });
   const cur = document.querySelector('input[name=prov]:checked');
   if (!cur || cur.disabled) {
@@ -1908,7 +1905,7 @@ function checkStartReady() {
   const st = prov ? API_STATE[prov].st : null;
   const audioOk = AUDIO.out === 'ok' && MIC.st === 'ok';
   $('#startBtn').disabled = st !== 'ok' || !audioOk;
-  $('#setupMsg').textContent = !prov ? 'Ingresá al menos una clave de API.'
+  $('#setupMsg').textContent = !prov ? 'El servidor seguro todavía no está disponible.'
     : st === 'bad' ? 'La API elegida no responde: ' + API_STATE[prov].msg
     : st !== 'ok' ? 'Probando la API elegida…'
     : !audioOk ? 'Falta la prueba de audio y micrófono (arriba).'
@@ -1916,7 +1913,7 @@ function checkStartReady() {
 }
 function readSetupIntoState() {
   S.name = $('#inName').value.trim() || 'Lía';
-  S.keys = { openai: $('#key-openai').value.trim(), deepseek: $('#key-deepseek').value.trim(), gemini: $('#key-gemini').value.trim() };
+  S.keys = { ...BACKEND_PROVIDERS };
   S.provider = document.querySelector('input[name=prov]:checked').value;
   S.mode = S.provider === 'deepseek' ? 'text' : 'live';
   S.source = KB_FULL;
@@ -1976,6 +1973,9 @@ $('#wantViaBtn').addEventListener('click', () => {
   $('#landing').classList.add('hidden');
   $('#setup').classList.remove('hidden');
   showStep(3);
+  $('#startBtn').hidden = false;
+  refreshKeys();
+  warmAllApis();
 });
 $('#provs').addEventListener('change', () => {
   const p = document.querySelector('input[name=prov]:checked')?.value;
@@ -2029,9 +2029,20 @@ $('#landingDots').innerHTML = Object.values(FAC).map(f => `<i style="background:
   setInterval(show, 2800);
 })();
 
-restoreTestKeys();
-refreshKeys();
-renderApiStatus();
+async function iniciarBackendSeguro() {
+  try {
+    const r = await fetch(IRIS_BACKEND_URL + '/health');
+    const data = await r.json();
+    if (!r.ok || !data.ok) throw new Error('no disponible');
+    BACKEND_PROVIDERS = Object.fromEntries(['openai', 'deepseek', 'gemini'].map(p => [p, Boolean(data.providers?.[p]) ? 'servidor' : '']));
+    ['openai', 'deepseek', 'gemini'].forEach(p => setApi(p, BACKEND_PROVIDERS[p] ? 'ok' : 'idle', BACKEND_PROVIDERS[p] ? 'conectada · servidor seguro' : 'no configurada'));
+  } catch {
+    ['openai', 'deepseek', 'gemini'].forEach(p => setApi(p, 'bad', 'no se pudo contactar al servidor seguro'));
+  }
+  refreshKeys();
+  renderApiStatus();
+}
+iniciarBackendSeguro();
 // Un único bucle de animación: boca de la nube y enjambre
 (function frame(t) { tickMouth(); drawSwarm(t); requestAnimationFrame(frame); })(0);
 </script>
